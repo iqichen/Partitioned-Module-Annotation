@@ -94,3 +94,9 @@ python neo4j/import.py \
 ## Platform Demo
 
 ![Platform Demo](frontend/platform.png)
+
+## Thesis
+
+For more detailed information about the methodology and research behind this project, please refer to the bachelor's degree thesis included in this repository:
+
+[Design and Implementation of Modularization Methods for Industrial Intelligent Models](docs/thesis.pdf)
