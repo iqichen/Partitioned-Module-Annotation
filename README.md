@@ -60,13 +60,27 @@ PYTHONPATH="$PWD" python similarity/partition.py \
 
 ## Heatmap Generation & Annotation
 
-- Select a `.pkl` file from the `features` directory to generate a heatmap.
-- Upload the generated heatmap to the platform for functional annotation.
+```bash
+# Generate a heatmap from a partitioned feature file
+# Select a .pkl file from the /features directory
+python scripts/generate_heatmap.py \
+  --input features/your_partition_file.pkl \
+  --output outputs/your_heatmap.png
+
+# Upload the generated heatmap to the platform for functional annotation
+```
 
 ## Knowledge Graph Construction
 
-- Export the annotation results as a CSV file.
-- Import the CSV into Neo4j to generate a knowledge graph.
+```bash
+# Export annotation results as a CSV file
+# Import the CSV into Neo4j to generate a knowledge graph
+python scripts/import_to_neo4j.py \
+  --csv outputs/your_annotation.csv \
+  --neo4j-uri bolt://localhost:7687 \
+  --user neo4j \
+  --password your_password
+```
 
 ---
 
