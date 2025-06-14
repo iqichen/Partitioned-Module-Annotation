@@ -67,7 +67,7 @@ python <Model_Name>.py \
   --output heatmaps/<Model_Name>/modulex_laptop.jpg
 ```
 
-![Heatmap Example](heatmaps/<Model_Name>/module2_laptop.jpg)
+![Heatmap Example](heatmaps/yolov3/module2_laptop.jpg)
 
 3. Annotation
 
