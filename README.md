@@ -1,78 +1,116 @@
-# 大模型模块化语义标注平台
+# 大模型模块化功能标注平台
 
 ## 项目简介
 
-本项目旨在对大型语言模型进行模块拆分，并对各个模块进行语义标注，最终通过知识图谱进行存储和可视化。整个流程通过一个集成的前端平台进行操作，实现了大模型能力的细粒度分析与理解。
+本项目致力于对大型语言模型进行模块化拆分，并对各个模块赋予语义标注。通过聚类算法实现模型能力的细粒度划分，结合热力图可视化与交互式标注，最终将标注结果导入Neo4j，构建可视化的知识图谱。平台集成了数据处理、聚类分析、可视化展示、人工标注与知识图谱生成等功能，助力于深入理解和分析大模型的内部结构与功能分布。
 
-## Quick Start
+---
 
-### Environment Requirements
+# 🛠 Installation
 
-- Python 3.8.12
-- CUDA 11.8
-- PyTorch 2.1.0
-- MMCV 2.1.0
-- MMDetection 3.3.0
-- MMEngine-lite 0.10.7
-- Neo4j 5.25.1
-- JDK 17.0.8
+The model partitioning and annotation platform is based on PyTorch and the OpenMMLab ecosystem. Some pre-trained weights are from timm.
 
-### Installation
+## 1. Create Python Environment
 
-1. Clone the repository
 ```bash
-git clone git@github.com:iqichen/Partitioned-Module-Annotation.git
-cd Partitioned-Module-Annotation
+conda create -n open-mmlab python=3.8 pytorch=2.1.0 cudatoolkit=11.8 torchvision -c pytorch -y
+conda activate open-mmlab
 ```
 
-2. Install dependencies
+## 2. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Configure Neo4j database connection
+Or, install key dependencies manually:
 
-4. Run the application
 ```bash
-# To be added
+pip install torch==2.1.0
+pip install mmcv==2.1.0
+pip install mmdet==3.3.0
+pip install mmengine-lite==0.10.7
+pip install py2neo==2021.2.3
+pip install pandas==1.3.5
+pip install numpy==1.21.6
+pip install timm
 ```
 
-## 平台展示
+> **Note:** The code requires `torch.fx` for computational graph extraction. Please ensure your PyTorch version is >=1.10.
 
-![平台展示图](placeholder_for_platform_image.png)
+## 3. Configure Neo4j
 
-## 主要功能
+Set up a Neo4j database (version 5.25.1 recommended) and note the connection details for later use.
 
-- **模型模块拆分**：将大型语言模型按功能和结构拆分为多个子模块
-- **语义标注**：对拆分后的模块进行语义级别的标注和分类
-- **知识图谱构建**：基于Neo4j构建知识图谱，存储模块间的关系和语义信息
-- **前端交互平台**：提供友好的用户界面，支持模型分析、标注和可视化全流程操作
+---
 
-## 技术栈
+# 🚀 Getting Started
 
-- **后端**：Python, Neo4j图数据库
-- **前端**：Web界面（待补充具体技术）
-- **数据处理**：Pandas等数据分析库
+To use the platform, follow these main steps:
 
-## 项目结构
+## 1. Model Feature Extraction & Similarity Computation
 
+- Specify your dataset and model configuration.
+- Extract model feature embeddings and compute representation similarity.
+
+Example:
+
+```bash
+PYTHONPATH="$PWD" python similarity/get_rep.py \
+  $Config_file \
+  --out $Feature_path \
+  [--checkpoint $Checkpoint]
 ```
-Partitioned-Module-Annotation/
-├── neo4j/                # Neo4j相关脚本和数据
-│   ├── import.py         # 知识图谱构建脚本
-│   └── annotation.csv    # 标注数据
-├── frontend/             # 前端代码
-└── ...
+- All feature embeddings should be saved as `.pth` files in the same directory.
+- Compute feature similarity (results saved as `net1.net2.pkl`):
+
+```bash
+PYTHONPATH="$PWD" python similarity/compute_sim.py \
+  --feat_path $Feat_directory \
+  --sim_func $Similarity_function   # [cka, rbf_cka, lr]
 ```
+- Compute feature size (input-output dimensions):
 
-## 贡献指南
+```bash
+PYTHONPATH="$PWD" python similarity/count_inout_size.py \
+  --root $Feat_directory
+```
+- The result is a JSON file (e.g., `MODEL_INOUT_SHAPE.json`).
 
-欢迎提交问题和功能需求！如果您想贡献代码，请先fork本仓库，然后提交pull request。
+## 2. Network Partitioning
 
-## 许可证
+- Perform clustering-based partitioning with parameters:
+  - Number of partitions `K` (default: 3)
+  - Number of initializations `n_init` (default: 10)
+  - Maximum iterations `max_iter` (default: 300)
 
-[待补充]
+Example:
 
-## 更新日志
+```bash
+PYTHONPATH="$PWD" python similarity/partition.py \
+  --sim_path $Feat_similarity_path \
+  --K $Num_partition \
+  --trial $Num_repeat_runs \
+  --eps $Size_ratio_each_block \
+  --num_iter $Maximum_num_iter_eachrun
+```
+- The output is an assignment file in `.pkl` format.
 
-最后更新：2025年6月14日 
+## 3. Heatmap Generation & Annotation
+
+- Select a `.pkl` file from the `features` directory to generate a heatmap.
+- Upload the generated heatmap to the platform for functional annotation.
+
+## 4. Knowledge Graph Construction
+
+- Export the annotation results as a CSV file.
+- Import the CSV into Neo4j to generate a knowledge graph.
+
+---
+
+For more details, please refer to the code and scripts in the `similarity/` and `features/` directories.
+
+## Platform Demo
+
+![Platform Demo](frontend/platform.png)
+
