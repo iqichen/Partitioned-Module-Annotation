@@ -67,7 +67,7 @@ python <Model_Name>.py \
   --output heatmaps/<Model_Name>/modulex_laptop.jpg
 ```
 
-![Heatmap Example](heatmaps/yolov3/module2_laptop.jpg)
+<img src="heatmaps/yolov3/module2_laptop.jpg" alt="Heatmap Example" width="600"/>
 
 3. Annotation
 
@@ -93,5 +93,5 @@ python neo4j/import.py \
 
 ## Platform Demo
 
-![Platform Demo](frontend/platform.png)
+<img src="frontend/platform.png" alt="Platform Demo" width="800"/>
 
