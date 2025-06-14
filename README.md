@@ -48,8 +48,7 @@ Set up a Neo4j database (version 5.25.1 recommended) and note the connection det
 
 ```bash
 # Partition the model using clustering
-PYTHONPATH="$PWD" python similarity/partition.py \
-  --model $Model_Config \
+python split/<Model_Name>.py \
   --data $Dataset_Path \
   --K $Num_Partitions      # default=3 \
   --n_init $Num_Initializations   # default=10 \
@@ -63,25 +62,27 @@ PYTHONPATH="$PWD" python similarity/partition.py \
 ```bash
 # Generate a heatmap from a partitioned feature file
 # Select a .pkl file from the /features directory
-python scripts/generate_heatmap.py \
-  --input features/your_partition_file.pkl \
-  --output outputs/your_heatmap.png
+python <Model_Name>.py \
+  --input features/<Model_Name>_features_k.pkl \
+  --output heatmaps/<Model_Name>/modulex_laptop.jpg
 ```
 
-![Heatmap Example](heatmaps/yolov3/module2_laptop.jpg)
+![Heatmap Example](heatmaps/<Model_Name>/module2_laptop.jpg)
 
 3. Annotation
 
 ```bash
-# Upload the generated heatmap to the platform for functional annotation
+# Annotate the heatmap for functional labeling
+python annotation/<Model_Name>.py \
+  --input heatmaps/<Model_Name>/modulex_laptop.jpg \
+  --output outputs/your_annotation.csv
 ```
 
 4. Knowledge Graph Construction
 
 ```bash
-# Export annotation results as a CSV file
-# Import the CSV into Neo4j to generate a knowledge graph
-python scripts/import_to_neo4j.py \
+# Import the annotation CSV into Neo4j to generate a knowledge graph
+python neo4j/import.py \
   --csv outputs/your_annotation.csv \
   --neo4j-uri bolt://localhost:7687 \
   --user neo4j \
