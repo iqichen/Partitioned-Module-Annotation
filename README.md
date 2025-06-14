@@ -44,7 +44,7 @@ Set up a Neo4j database (version 5.25.1 recommended) and note the connection det
 
 # 🚀 Getting Started
 
-## Model Partitioning and Feature Extraction
+1. Model Partitioning and Feature Extraction
 
 ```bash
 # Partition the model using clustering
@@ -58,7 +58,7 @@ PYTHONPATH="$PWD" python similarity/partition.py \
 # Output: Partitioned results and feature files (.pkl) are saved in the /features directory
 ```
 
-## Heatmap Generation & Annotation
+2. Heatmap Generation
 
 ```bash
 # Generate a heatmap from a partitioned feature file
@@ -66,11 +66,17 @@ PYTHONPATH="$PWD" python similarity/partition.py \
 python scripts/generate_heatmap.py \
   --input features/your_partition_file.pkl \
   --output outputs/your_heatmap.png
+```
 
+![Heatmap Example](heatmaps/yolov3/module2_laptop.jpg)
+
+3. Annotation
+
+```bash
 # Upload the generated heatmap to the platform for functional annotation
 ```
 
-## Knowledge Graph Construction
+4. Knowledge Graph Construction
 
 ```bash
 # Export annotation results as a CSV file
